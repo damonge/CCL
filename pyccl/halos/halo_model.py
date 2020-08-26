@@ -284,10 +284,10 @@ class HMCalculator(object):
         self._get_ingredients(a, cosmo, False)
         uk1 = prof12_2pt.fourier_2pt(prof1, cosmo, k, self._mass, a,
                                      prof2=prof2,
-                                     mass_def=self._mdef).squeeze()
+                                     mass_def=self._mdef).T
         uk2 = prof34_2pt.fourier_2pt(prof3, cosmo, k, self._mass, a,
-                                     mass_def=self._mdef).squeeze()
-        i04 = self._integrate_over_mf(np.einsum('ij,ik->jki', uk1, uk2))
+                                     mass_def=self._mdef).T
+        i04 = self._integrate_over_mf(uk1[:, None, :] * uk2[None, :, :])
         return i04
 
 
