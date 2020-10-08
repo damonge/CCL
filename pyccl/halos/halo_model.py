@@ -400,7 +400,8 @@ def halomod_bias_1pt(cosmo, hmc, k, a, prof, normprof=False):
 def halomod_power_spectrum(cosmo, hmc, k, a, prof,
                            prof_2pt=None, prof2=None, p_of_k_a=None,
                            normprof1=False, normprof2=False,
-                           get_1h=True, get_2h=True, f_ka=None):
+                           get_1h=True, get_2h=True,
+                           f_ka=None, alpha=1.):
     """ Computes the halo model power spectrum for two
     quantities defined by their respective halo profiles.
     The halo model power spectrum for two profiles
@@ -451,6 +452,9 @@ def halomod_power_spectrum(cosmo, hmc, k, a, prof,
             :class:`~pyccl.pk2d.Pk2D`. The total halo model power
             spectrum will be multiplied by this factor. If `None`
             the extra factor is just 1.
+        alpha (float): parameter to modify the full power spectrum through
+            :math:`P(k)=(P^{\\alpha}_{1h}(k)+P^{\\alpha}_{2h}(k))^{1/\\alpha}`
+            , as described in `Mead et al. (2020)`.
 
     Returns:
         float or array_like: integral values evaluated at each
@@ -530,7 +534,7 @@ def halomod_power_spectrum(cosmo, hmc, k, a, prof,
             fcorr = 1
 
         # Total power spectrum
-        out[ia, :] = (pk_1h + pk_2h) * norm * fcorr
+        out[ia, :] = (pk_1h**alpha + pk_2h**alpha)**(1./alpha) * norm * fcorr
 
     if np.ndim(a) == 0:
         out = np.squeeze(out, axis=0)
@@ -544,7 +548,8 @@ def halomod_Pk2D(cosmo, hmc, prof,
                  normprof1=False, normprof2=False,
                  get_1h=True, get_2h=True,
                  lk_arr=None, a_arr=None,
-                 extrap_order_lok=1, extrap_order_hik=2, f_ka=None):
+                 extrap_order_lok=1, extrap_order_hik=2,
+                 f_ka=None, alpha=1.):
     """ Returns a :class:`~pyccl.pk2d.Pk2D` object containing
     the halo-model power spectrum for two quantities defined by
     their respective halo profiles. See :meth:`~HMCalculator.pk`
@@ -599,6 +604,9 @@ def halomod_Pk2D(cosmo, hmc, prof,
             :class:`~pyccl.pk2d.Pk2D`. The total halo model power
             spectrum will be multiplied by this factor. If `None`
             the extra factor is just 1.
+        alpha (float): parameter to modify the full power spectrum through
+            :math:`P(k)=(P^{\\alpha}_{1h}(k)+P^{\\alpha}_{2h}(k))^{1/\\alpha}`
+            , as described in `Mead et al. (2020)`.
 
     Returns:
         :class:`~pyccl.pk2d.Pk2D`: halo model power spectrum.
@@ -618,10 +626,12 @@ def halomod_Pk2D(cosmo, hmc, prof,
                                     prof, prof_2pt=prof_2pt,
                                     prof2=prof2, p_of_k_a=p_of_k_a,
                                     normprof1=normprof1, normprof2=normprof2,
-                                    get_1h=get_1h, get_2h=get_2h, f_ka=f_ka)
+                                    get_1h=get_1h, get_2h=get_2h,
+                                    f_ka=f_ka, alpha=alpha)
 
     pk2d = Pk2D(a_arr=a_arr, lk_arr=lk_arr, pk_arr=pk_arr,
                 extrap_order_lok=extrap_order_lok,
                 extrap_order_hik=extrap_order_hik,
                 cosmo=cosmo, is_logp=False)
     return pk2d
+
