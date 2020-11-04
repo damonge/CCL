@@ -286,6 +286,7 @@ class HMCalculator(object):
                                      prof2=prof2,
                                      mass_def=self._mdef).T
         uk2 = prof34_2pt.fourier_2pt(prof3, cosmo, k, self._mass, a,
+                                     prof2=prof4,
                                      mass_def=self._mdef).T
         i04 = self._integrate_over_mf(uk1[:, None, :] * uk2[None, :, :])
         return i04
