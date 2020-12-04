@@ -16,9 +16,17 @@ jobs:
           with:
             python-version: ${{ matrix.py }}
 
+        - name: Install dependencies
+          run: |
+            sudo -H apt-get install cmake
+
         - name: Build CCL
           run: |
             python setup.py build
             python setup.py develop
 
-          
+        - name: Unit tests
+          run: OMP_NUM_THREADS=2 pytest -vv pyccl --cov=pyccl
+
+        - name: Benchmarks
+          run: OMP_NUM_THREADS=2 pytest -vv benchmarks --cov=pyccl --cov-append
