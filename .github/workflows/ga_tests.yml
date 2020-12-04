@@ -26,6 +26,7 @@ jobs:
             pip install -U scipy
             pip install -U pytest
             pip install -U pytest-cov
+            pip install -U fast-pt
             sudo -H apt-get install libgsl-dev libfftw3-dev
 
         - name: Build CCL
