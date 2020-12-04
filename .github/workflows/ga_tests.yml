@@ -24,6 +24,7 @@ jobs:
             python -m pip install -U pip
             pip install -U numpy
             pip install -U pytest
+            pip install -U pytest-cov
             sudo -H apt-get install libgsl-dev libfftw3-dev
 
         - name: Build CCL
