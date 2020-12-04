@@ -360,6 +360,6 @@ def halo_bias_from_name(name):
     """
     bias_functions = {c.name.lower(): c for c in HaloBias.__subclasses__()}
     if name.lower() in bias_functions:
-        return bias_functions[name]
+        return bias_functions[name.lower()]
     else:
         raise ValueError("Halo bias parametrization %s not implemented")

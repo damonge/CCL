@@ -743,6 +743,6 @@ def mass_function_from_name(name):
     """
     mass_functions = {c.name.lower(): c for c in MassFunc.__subclasses__()}
     if name.lower() in mass_functions:
-        return mass_functions[name]
+        return mass_functions[name.lower()]
     else:
         raise ValueError("Mass function %s not implemented")
