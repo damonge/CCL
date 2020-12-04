@@ -21,7 +21,8 @@ jobs:
 
         - name: Install dependencies
           run: |
-            sudo -H apt-get install cmake
+            python -m pip install -U pip
+            pip install -U numpy
 
         - name: Build CCL
           run: |
