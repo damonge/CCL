@@ -393,7 +393,8 @@ def concentration_from_name(name):
     """
     concentrations = {c.name.lower(): c
                       for c in Concentration.__subclasses__()}
+    print(concentrations)
     if name.lower() in concentrations:
-        return concentrations[name]
+        return concentrations[name.lower()]
     else:
         raise ValueError("Concentration %s not implemented")
