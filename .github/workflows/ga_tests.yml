@@ -17,6 +17,8 @@ jobs:
             python-version: ${{ matrix.py }}
 
         - name: Build CCL
-          run: python setup.py build
-          run: python setup.py develop
+          run: |
+            python setup.py build
+            python setup.py develop
+
           
