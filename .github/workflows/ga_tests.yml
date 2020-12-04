@@ -15,3 +15,8 @@ jobs:
           uses: actions/setup-python@v2
           with:
             python-version: ${{ matrix.py }}
+
+        - name: Build CCL
+          run: python setup.py build
+          run: python setup.py develop
+          
