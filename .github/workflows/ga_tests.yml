@@ -16,6 +16,9 @@ jobs:
           with:
             python-version: ${{ matrix.py }}
 
+        - name: Check cmake
+          run: cmake --version
+
         - name: Install dependencies
           run: |
             sudo -H apt-get install cmake
