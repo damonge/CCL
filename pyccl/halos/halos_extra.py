@@ -44,7 +44,8 @@ class HaloProfileHOD(HaloProfileNFW):
                  lM0=12.0, lM0p=0.,
                  lM1=13.0, lM1p=0.,
                  sigmaLogM=0.4, alpha=1.,
-                 a_pivot=1.):
+                 a_pivot=1., fc=1.,
+                 ns_independent=False):
         self.lMmin=lMmin
         self.lMminp=lMminp
         self.lM0=lM0
@@ -54,8 +55,10 @@ class HaloProfileHOD(HaloProfileNFW):
         self.a0 = a_pivot
         self.sigmaLogM = sigmaLogM
         self.alpha = alpha
+        self.fc = fc
         super(HaloProfileHOD, self).__init__(c_M_relation)
         self._fourier = self._fourier_analytic_hod
+        self.ns_independent = ns_independent
 
     def update_parameters(self, **kwargs):
         self.lMmin = kwargs.get('lMmin', self.lMmin)
@@ -67,6 +70,7 @@ class HaloProfileHOD(HaloProfileNFW):
         self.a0 = kwargs.get('a_pivot', self.a0)
         self.sigmaLogM = kwargs.get('sigmaLogM', self.sigmaLogM)
         self.alpha = kwargs.get('alpha', self.alpha)
+        self.fc = kwargs.get('fc', self.fc)
 
     def _lMmin(self, a):
         return self.lMmin + self.lMminp * (a - self.a0)
@@ -97,7 +101,10 @@ class HaloProfileHOD(HaloProfileNFW):
         # NFW profile
         uk = self._fourier_analytic(cosmo, k_use, M_use, a, mass_def) / M_use[:, None]
 
-        prof = Nc[:, None] * (1 + Ns[:, None] * uk)
+        if self.ns_independent:
+            prof = (Nc[:, None] * self.fc + Ns[:, None] * uk)
+        else:
+            prof = Nc[:, None] * (self.fc + Ns[:, None] * uk)
 
         if np.ndim(k) == 0:
             prof = np.squeeze(prof, axis=-1)
@@ -115,8 +122,11 @@ class HaloProfileHOD(HaloProfileNFW):
         # NFW profile
         uk = self._fourier_analytic(cosmo, k_use, M_use, a, mass_def) / M_use[:, None]
 
-        prof = Ns[:, None] * uk
-        prof = Nc[:, None] * (2 * prof + prof**2)
+        Nsuk = Ns[:, None] * uk
+        if self.ns_independent:
+            prof = 2 * Nc[:, None] * self.fc * Nsuk + Nsuk**2
+        else:
+            prof = Nc[:, None] * (2 * self.fc * Nsuk + Nsuk**2)
 
         if np.ndim(k) == 0:
             prof = np.squeeze(prof, axis=-1)
