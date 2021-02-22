@@ -76,28 +76,28 @@ def get_pk_new(mf, c, cosmo, a, k, get_1h, get_2h):
     return p
 
 
-@pytest.mark.parametrize('mf_c', [['shethtormen', 'bhattacharya2011'],
-                                  ['shethtormen', 'duffy2008'],
-                                  ['shethtormen', 'constant_concentration'],
-                                  ['tinker10', 'constant_concentration']])
-def test_halomodel_choices_smoke(mf_c):
-    from pyccl.pyutils import assert_warns
-    mf, c = mf_c
-    cosmo = ccl.Cosmology(
-        Omega_c=0.27, Omega_b=0.045, h=0.67, sigma8=0.8, n_s=0.96,
-        transfer_function='bbks', matter_power_spectrum='linear',
-        mass_function=mf, halo_concentration=c)
-    a = 0.8
-    k = np.geomspace(1E-2, 1, 10)
-    # Deprecated
-    # TODO: Convert this and other places to using the non-deprecated syntax
-    # Or, since this wasn't already done, maybe this is a useful convenience
-    # function?
-    p = assert_warns(ccl.CCLWarning, ccl.twohalo_matter_power, cosmo, k, a)
-    pb = get_pk_new(mf, c, cosmo, a, k, False, True)
-
-    assert np.all(np.isfinite(p))
-    assert np.allclose(p, pb)
+#@pytest.mark.parametrize('mf_c', [['shethtormen', 'bhattacharya2011'],
+#                                  ['shethtormen', 'duffy2008'],
+#                                  ['shethtormen', 'constant_concentration'],
+#                                  ['tinker10', 'constant_concentration']])
+#def test_halomodel_choices_smoke(mf_c):
+#    from pyccl.pyutils import assert_warns
+#    mf, c = mf_c
+#    cosmo = ccl.Cosmology(
+#        Omega_c=0.27, Omega_b=0.045, h=0.67, sigma8=0.8, n_s=0.96,
+#        transfer_function='bbks', matter_power_spectrum='linear',
+#        mass_function=mf, halo_concentration=c)
+#    a = 0.8
+#    k = np.geomspace(1E-2, 1, 10)
+#    # Deprecated
+#    # TODO: Convert this and other places to using the non-deprecated syntax
+#    # Or, since this wasn't already done, maybe this is a useful convenience
+#    # function?
+#    p = assert_warns(ccl.CCLWarning, ccl.twohalo_matter_power, cosmo, k, a)
+#    pb = get_pk_new(mf, c, cosmo, a, k, False, True)
+#
+#    assert np.all(np.isfinite(p))
+#    assert np.allclose(p, pb)
 
 
 def test_halomodel_choices_raises():
